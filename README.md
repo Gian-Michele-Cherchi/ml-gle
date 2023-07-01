@@ -10,7 +10,7 @@ Once you have created your account tell me your username so I  can add you as co
 
 In order to download or upload anything on huggingface you will have to download the git Large File System library, but you will find a little tutorial on how to do it once you register to the site. 
 
-Once you cloned the project on your local machine or host you work on, you can download goind in the data folder by, 
+Once you cloned the project on your local machine or host you work on, you can download going in the data folder and cloning, 
 ```bash
 git clone https://huggingface.co/datasets/gian-michele/meltBR
 ```
