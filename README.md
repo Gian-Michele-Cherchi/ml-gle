@@ -2,7 +2,7 @@
 
 ### DATASET
 
-The dataset repo is at https://huggingface.co/datasets/gian-michele/meltBR. 
+The dataset repo is at https://huggingface.co/datasets/gian-michele/meltBR
 
 It contains some additional information and you can access it by creating an account at https://huggingface.co, if you do not already have it. It is a private repo, so only people with credentials can access. 
 
