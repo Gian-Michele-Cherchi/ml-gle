@@ -14,7 +14,7 @@ Once you cloned the project on your local machine or host you work on, you can d
 ```bash
 git clone https://huggingface.co/datasets/gian-michele/meltBR
 ```
-It will ask your hugginface credentials and your token probably.
+It will ask your hugginface credentials and your token probably. Download will be fast, it's roughly 1Gb. 
 
 
 
