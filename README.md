@@ -1,4 +1,4 @@
-## Tentative Project for sharing and exploring new ideas to be applied to Molecular Dynamics Generation from short-term trajectories
+### Tentative Project for sharing and exploring new ideas to be applied to Molecular Dynamics Generation from short-term trajectories
 
 ### DATASET
 
