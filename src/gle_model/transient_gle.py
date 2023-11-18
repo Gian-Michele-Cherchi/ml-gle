@@ -30,7 +30,7 @@ class TransientGLE():
             - x_gle [batchsize, nframes, 3]: Position Dynamics following GLE fitted solution
         """
         if self.model is None:
-            raise ValueError("Model not fitted yet. Call fit() first.")
+            raise ValueError("Paremeters not found. Call fit() first.")
         
         self.nsamples = z.size(0)
         self.nframes = z.size(1)
@@ -85,11 +85,6 @@ class TransientGLE():
             reg = self.model.fit(f.cpu().numpy(), x_msd[reg_points,None].cpu().numpy())
             self.params[mod,:] = torch.tensor(reg.coef_)
             self.expl_variance[mod] = self.params[:,0] + self.params[:,1]*f_tau[reg_points,:mod+1].sum(dim=1, keepdim=True)
-        
-    def get_expl_variance(self) -> torch.Tensor:
-        if self.model is None:
-            raise ValueError("Model not fitted yet. Call fit() first.")
-        return self.expl_variance
     
     def get_params(self) -> torch.Tensor:
         if self.model is None:
