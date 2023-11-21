@@ -3,9 +3,7 @@
 #### NeurIPS 2023: Accepted at the Machine Learning and the Physical Sciences Workshop
 
 
-
-!(https://github.com/Gian-Michele-Cherchi/ml-gle/assets/43932730/fc1f6bfb-ca91-464f-a038-afde3aaa9532)
-
+<video width="630" height="300" src="https://github.com/Gian-Michele-Cherchi/ml-gle/assets/43932730/fc1f6bfb-ca91-464f-a038-afde3aaa9532"></video>
 
 
 
