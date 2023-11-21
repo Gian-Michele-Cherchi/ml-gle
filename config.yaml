@@ -1,3 +1,7 @@
 USERPATH: "/home/gmcherch/"
 PROJECTNAME: "rnn-path-entropy"
 SYSTEM: "water"
+
+theme: jekyll-theme-minimal
+title: Octocat's homepage
+description: Bookmark this to keep an eye on my project updates!
