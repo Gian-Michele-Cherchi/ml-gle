@@ -2,11 +2,10 @@
 
 #### NeurIPS 2023: Accepted at the Machine Learning and the Physical Sciences Workshop
 
-             
 
-   Solarized dark         |  Solarized Ocean
+   Slow         |  Accelerated
 |-------------------------|-------------------------|
-| <video width="630" height="300" src="https://github.com/Gian-Michele-Cherchi/ml-gle/assets/43932730/fc1f6bfb-ca91-464f-a038-afde3aaa9532"></video>   |  <video width="630" height="300" src="https://github.com/Gian-Michele-Cherchi/ml-gle/assets/43932730/74b6e5b1-ed34-428a-b3c5-5b9d237e3111"></video> |
+| <video width="600" height="270" src="https://github.com/Gian-Michele-Cherchi/ml-gle/assets/43932730/fc1f6bfb-ca91-464f-a038-afde3aaa9532"></video>   |  <video width="600" height="270" src="https://github.com/Gian-Michele-Cherchi/ml-gle/assets/43932730/74b6e5b1-ed34-428a-b3c5-5b9d237e3111"></video> |
 
 
 
