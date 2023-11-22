@@ -38,8 +38,8 @@ The simulated trajectories are downsampled on-the-fly with a coarse-grained time
 
 With the ML-GLE, only a small fraction of the simulation time is needed to extrapolate the effective single polymer dynamics and discover the diffusion coefficient. 
 
-### Pre-processing 
-The modes dataset is obtained from the LAMMPS output trajectories in binary format. Under the directory [src/data/](src/data/README.md)
+### Pre-processing: RAW -> READY
+Under the directory [src/data](src/data), the ```preproc.py``` script can be used to convert the LAMMPS dump.nc containing the polymer trajectories file in pytorch format ```.pt``` and obtain the normal modes trajectories as well in a separate ```.pt``` file, which will be used for training. 
 ### Post-processing
 
 The training dataset is available at at https://huggingface.co/datasets/gian-michele/meltBR
