@@ -1,4 +1,4 @@
-# A machine learning enhanced Generalized Langevin Equation for Transient Anomalous Diffusion in Polymer Dynamics (NeurIPS ML for Physical Sciences Workshop 2023)
+## ML-GLE: an ML-enhanced Generalized Langevin Equation framework for Transient Anomalous Diffusion in Polymer Dynamics (NeurIPS ML for Physical Sciences Workshop 2023)
 
 
 This project contains the source code needed to reproduce the results shown in the workshop paper submitted at the ML for Physical Sciences Workshop at the NeurIPS conference 2023 ([ML4PS workshop link](https://ml4physicalsciences.github.io/2023/)). 
@@ -36,9 +36,10 @@ The training data comes from a coarse-grained (CG) polymer melt simulation of a 
 
 The simulated trajectories are downsampled on-the-fly with a coarse-grained timestep $\Delta t = {100}{ps}$ for a total simulation time of $T_{sim} = {10}{\micro s}$, which is necessary to observe and estimate useful statistical properties, like diffusion coefficients and correlations functions (ACFs). Reaching the latter simulation time also depends on hardware configuration and number of CPUs cores exploited, but it is in general a computationally expensive task. For this system it may take $\sim 12-20$ days.  
 
-With the present method
+With the ML-GLE, only a small fraction of the simulation time is needed to extrapolate the effective single polymer dynamics and discover the diffusion coefficient. 
 
 ### Pre-processing 
+The modes dataset is obtained from the LAMMPS output trajectories in binary format [src/](src/data/README.md)
 ### Post-processing
 
 The training dataset is available at at https://huggingface.co/datasets/gian-michele/meltBR
