@@ -10,18 +10,9 @@
 
 
 
+![MD_simulation_snapshot_T300K_](https://github.com/Gian-Michele-Cherchi/ml-gle/assets/43932730/b5b4e26f-7ddf-438d-ab0c-a3254dcdb791)
 
 
-
-
-
-
-
-
-
-
-
-![1700335536342](image/README/1700335536342.png)
 
 ### DATASET
 
