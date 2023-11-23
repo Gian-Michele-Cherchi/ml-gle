@@ -74,8 +74,8 @@ def train_app(cfg: DictConfig) -> None:
         makedirs(gen_path)
         savepath = os.path.join(SAVEPATH, "T"+str(temp)+"/mode"+str(nmode)+"_"+str(n_input)+"stesps")
         losspath = os.path.join(savepath, "metrics.csv")
-        metrics = pd.read_csv(losspath)
-        best_epoch = np.argmin(metrics["Val Loss"].values)+1
+        train_metrics = pd.read_csv(losspath)
+        best_epoch = np.argmin(train_metrics["Val Loss"].values)+1
         #if nmode == 1:
         #    epoch = 24
         #print(epoch)
@@ -98,7 +98,9 @@ def train_app(cfg: DictConfig) -> None:
         checkpoint = torch.load(CHECKPTPATH)
         model.load_state_dict(checkpoint)
         model.eval()
-        mode_traj, mu_traj, sigma_traj  = EulerIntegrator(
+        
+        # Trained Autoregressive model embedded in an Implicit Euler Integrative Scheme
+        mode_traj, mu_traj, sigma_traj  = EulerIntegrator( 
             model, 
             norms=norms,
             in_trajectories=test_data[:nsamples,:n_input],
@@ -114,9 +116,19 @@ def train_app(cfg: DictConfig) -> None:
         torch.save(mode_traj, os.path.join(gen_path, "gen/gen_mode"+str(nmode)+"_epoch"+str(best_epoch)+"_.pt"))
         torch.save(mu_traj, os.path.join(gen_path, "gen/gen_mu_mode"+str(nmode)+"_epoch"+str(best_epoch)+"_.pt"))
         torch.save({"mu": mu_traj, "sigma": sigma_traj}, os.path.join(gen_path, "gen/gen_params_mode"+str(nmode)+"_epoch"+str(best_epoch)+"_.pt"))
-
+    # Fit GLE model on short trajectories 
+    gle_model = TransientGLE()
+    gle_model.fit()
+    params = gle_model.get_params()
     
-    modes_traj[:,:,0] = TransientGLE
+    # Center of Mass dyamics with Transient GLE solution and generated modes 
+    modes_traj[:,:,0] = gle_model(modes_traj)
+    eval_metrics = {"Best Epoch": best_epoch,
+                    "params": params,
+                    }
+    wandb.log(eval_metrics)
+    
+    
         
     
         
