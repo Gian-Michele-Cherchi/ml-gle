@@ -1,13 +1,10 @@
 
 import torch
 import os
-from dataclasses import dataclass
-#from dataclasses import field 
-from typing import List
 from src.utils import msd_fft
 from sklearn.linear_model import LinearRegression
 
-@dataclass 
+
 class TransientGLE():
     """
         Generalized Langevin Equation class modelling transient anomalous diffusion in Polymer Melts 
@@ -27,7 +24,7 @@ class TransientGLE():
         INPUT: 
             - z [batchsize, nframes, nmodes,3]: Normal modes trajectories either from MD or Generated 
         OUTPUT 
-            - x_gle [batchsize, nframes, 3]: Position Dynamics following GLE fitted solution
+            - x [batchsize, nframes, 3]: Position Dynamics following GLE fitted solution
         """
         if self.model is None:
             raise ValueError("Paremeters not found. Call fit() first.")
@@ -35,9 +32,9 @@ class TransientGLE():
         self.nsamples = z.size(0)
         self.nframes = z.size(1)
         
-        bm = torch.randn(self.nsamples, self.nframes, 3).to(z).cumsum(dim=2) # Wiener Process 
-        x_gle = self.alpha*bm + self.beta*z.sum(dim=2)
-        return x_gle
+        bm = torch.randn(self.nsamples, self.nframes, 3).to(z).cumsum(dim=2) # Standard Brownian Motion 
+        x = self.alpha*bm + self.beta*z.sum(dim=2)
+        return x
     
     def fit(self, 
             x: torch.Tensor, 
@@ -52,8 +49,6 @@ class TransientGLE():
             - x [batchsize, nframes, nmodes,3]: Position trajectories 
             - z [batchsize, nframes, nmodes,3]: modes' trajectories
             - n_points: number of regression points 
-            - t_max: regression window's upper bound 
-            - t_min: regression window's lower bound 
 
         OUTPUT:
         """
@@ -90,6 +85,7 @@ class TransientGLE():
         if self.model is None:
             raise ValueError("Model not fitted yet. Call fit() first.")
         return self.params
+    
     
 
 
