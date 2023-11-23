@@ -21,7 +21,7 @@ class dynamical_model(nn.Module):
         self.input_feat = 3*in_channels*input_length 
         self.pred_var_dims = pred_var_dims
         self.diagonal = diagonal
-    
+        self.res_channels = residual_channels
         bias = True
      
         assert self.input_feat//8 > self.res_channels*3
@@ -73,7 +73,7 @@ class dynamical_model(nn.Module):
         # Loss evaluation 
         dyn_loss = self.NLL(rot_mean, logvar, rot_target_vel)
         loss = dyn_loss 
-        return loss, [rot_mean,logvar], dyn_loss, encoded 
+        return loss, [rot_mean,logvar], encoded 
                
     
     def encode(self, out): 

@@ -3,11 +3,11 @@ import torch
 import numpy as np 
 import torch 
 import torch.nn as nn
-from ia.library.act_func import ArcSinh, ParamTanh
 
-def makedirs(dirname):
-    if not os.path.exists(dirname):
-        os.makedirs(dirname)
+
+def makedirs(dirpath):
+    if not os.path.exists(dirpath):
+        os.makedirs(dirpath)
 
 class DeviceDataLoader():
     """Wrap a dataloader to move data to a device"""
@@ -78,8 +78,6 @@ def activation_func(activation):
         ['leaky_relu', nn.LeakyReLU(negative_slope=0.2, inplace=True)],
         ['selu', nn.SELU(inplace=True)],
         ['none', nn.Identity()],
-        ['arcsinh', ArcSinh()],
-        ['paramtanh', ParamTanh()],
         ['sigmoid', nn.Sigmoid()]
     ])[activation]
 
