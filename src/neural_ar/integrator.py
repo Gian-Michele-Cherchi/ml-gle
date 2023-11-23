@@ -1,5 +1,5 @@
 import torch 
-from src.utils import *
+from utils import *
 from torch.distributions import MultivariateNormal
 
 def EulerIntegrator(
