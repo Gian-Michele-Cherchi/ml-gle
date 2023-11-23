@@ -22,7 +22,7 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 @hydra.main(version_base=None, config_path="config", config_name="config")
-def train_app(cfg: DictConfig) -> None:
+def eval_app(cfg: DictConfig) -> None:
     #print(OmegaConf.to_yaml(cfg))
     
     wandb.init(
@@ -57,7 +57,7 @@ def train_app(cfg: DictConfig) -> None:
     checkpt = cfg.train["checkpt_epoch"]
     z_dim = cfg.train["z_dim"]
     nsamples = cfg.eval["nsamples"]
-    ngen = int(cfg.eval["ngen"])
+    ngen = int(float(cfg.eval["ngen"]))
     k = cfg.eval["k"]
     model = dynamical_model(
                         input_length=n_input, 
@@ -66,14 +66,17 @@ def train_app(cfg: DictConfig) -> None:
                         pred_var_dims=3,
                         ).to(DEVICE)
 
-    modes_traj = torch.tensor(nsamples, ngen, k, 3).to(DEVICE)
+    modes_traj = torch.tensor([nsamples, ngen, k, 3]).to(DEVICE)
     mode_corr = []
     genmode_corr = []
     for nmode in range(1,k):
+        savepath = os.path.join(SAVEPATH, "T"+str(temp)+"/mode"+str(nmode)+"_"+str(n_input)+"stesps")
         gen_path = os.path.join(savepath, "gen")
         makedirs(gen_path)
-        savepath = os.path.join(SAVEPATH, "T"+str(temp)+"/mode"+str(nmode)+"_"+str(n_input)+"stesps")
-        losspath = os.path.join(savepath, "metrics.csv")
+        try:
+            losspath = os.path.join(savepath, "metrics.csv")
+        except OSError as e:
+            print(e.errno)
         train_metrics = pd.read_csv(losspath)
         best_epoch = np.argmin(train_metrics["Val Loss"].values)+1
         #if nmode == 1:
@@ -130,6 +133,7 @@ def train_app(cfg: DictConfig) -> None:
     
     
         
-    
-        
+if __name__ == "__main__":
+    eval_app()
+
         
