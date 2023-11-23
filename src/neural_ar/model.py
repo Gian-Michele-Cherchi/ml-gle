@@ -1,16 +1,7 @@
 import os
-import yaml
-with open("config.yaml") as f:
-    config = yaml.load(f, Loader=yaml.FullLoader)
-PROJECTNAME = config["PROJECTNAME"]
-USERPATH = config["USERPATH"]
-SYSTEM = config["SYSTEM"]
-FULLPATH  = os.path.join(USERPATH, PROJECTNAME)
-SUBMODULE = os.path.join(FULLPATH, "ia")
-import sys 
-sys.path.append(SUBMODULE)
+
 import torch.nn as nn 
-from src.utils import * 
+from utils import * 
 
 
 

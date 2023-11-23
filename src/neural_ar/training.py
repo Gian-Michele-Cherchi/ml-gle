@@ -3,14 +3,10 @@
 import os
 import yaml
 import sys 
-with open("config.yaml") as f:
-    config = yaml.load(f, Loader=yaml.FullLoader)
-PROJECTNAME = config["PROJECTNAME"]
-USERPATH = config["USERPATH"]
-SYSTEM = config["SYSTEM"]
-FULLPATH  = os.path.join(USERPATH, PROJECTNAME)
-SUBMODULE = os.path.join(FULLPATH, "ia")
-sys.path.append(SUBMODULE)
+import pandas as pd 
+#############################################################
+from neural_ar.training import *
+from utils import *
 import torch 
 #import sys 
 #from torch.nn.functional import mse_loss
@@ -20,7 +16,6 @@ import torch
 import numpy as np
 
 BATCHLOSS_FREQ = 10
-BASEPATH = "home/gmcherch/project/"
 
 
 def evaluate_epoch(model, validation_loader, loss_function):
@@ -364,17 +359,9 @@ def train_dynamical_score_sde_notseq(epoch,
     
  
  
-PROJECTNAME = config["PROJECTNAME"]
-USERPATH = config["USERPATH"]
-SYSTEM = config["SYSTEM"]
-FULLPATH  = os.path.join(USERPATH, PROJECTNAME)
-SUBMODULE = os.path.join(FULLPATH, "ia")
-sys.path.append(SUBMODULE)
+
 BATCHLOSS_FREQ = 10
 CHECKPT_FREQ = 1
-#############################################################
-from ia.library.training import *
-from ia.library.utils import *
    
     
     
