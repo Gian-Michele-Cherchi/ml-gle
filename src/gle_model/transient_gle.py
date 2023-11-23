@@ -1,7 +1,7 @@
 
 import torch
 import os
-from src.utils import msd_fft
+from utils import msd_fft
 from sklearn.linear_model import LinearRegression
 
 
