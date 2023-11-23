@@ -1,0 +1,3 @@
+defaults:
+  - train: train_conf
+  - eval: gen_conf

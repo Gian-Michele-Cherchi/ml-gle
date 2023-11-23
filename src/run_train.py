@@ -21,8 +21,8 @@ import wandb
 import hydra 
 from omegaconf import DictConfig, OmegaConf
 
-@hydra.main(version_base=None, config_path="config", config_name="train_conf")
-def train_app(cfg: DictConfig):
+@hydra.main(version_base=None, config_path="config", config_name="config")
+def train_app(cfg: DictConfig) -> None:
     #print(OmegaConf.to_yaml(cfg))
     if WB_TRACK:
         wandb.init(

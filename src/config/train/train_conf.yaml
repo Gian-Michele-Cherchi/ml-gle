@@ -1,0 +1,17 @@
+lr: "1e-4"
+architecture : "mlp"
+dataset: "meltbr"
+epochs : 100
+n_input : 128
+per_train: 0.1
+per_val: 0.625
+save: True
+mode: 1
+train_batch: 128
+val_batch: 256
+activation : "relu"
+seed: 12345
+temp: 300
+z_dim: 4
+checkpt_epoch: ""
+
