@@ -33,6 +33,8 @@ Change the following fields in the ```config.yaml``` project configuration file:
 
 ## Train the NAR model for modes non-Markovian dynamics
 
+The training dataset is available at at https://huggingface.co/datasets/gian-michele/meltBR
+
 Modes training with the NAR model can be done by running the following:
 
 ```
@@ -59,7 +61,6 @@ With the ML-GLE, only a small fraction of the simulation time is needed to extra
 Under the directory [src/data](src/data), the ```preproc.py``` script can be used to convert the LAMMPS dump.nc containing the polymer trajectories file in pytorch format ```.pt``` and obtain the normal modes trajectories as well in a separate ```.pt``` file, which will be used for training. 
 ### Post-processing
 
-The training dataset is available at at https://huggingface.co/datasets/gian-michele/meltBR
 
 
 
