@@ -57,7 +57,7 @@ With Hydra, modes training can be done with a single command line:
 ```
 python src/run_train.py --multirun train=train_conf train.mode=1,2,3,...
 ```
-This launches jobs which are run sequentially, but multiprocessing can be exploited with joblib lanucher [JobLib Launcher](https://hydra.cc/docs/plugins/joblib_launcher/)
+This launches jobs which are run sequentially, but multiprocessing can be exploited with joblib lanucher [JobLib Launcher](https://hydra.cc/docs/plugins/joblib_launcher/), decreasing sensibly the training computational cost. 
 
 ## Generate effective polymer dynamics with the GLE
 
