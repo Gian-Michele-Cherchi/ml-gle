@@ -2,3 +2,8 @@
 *plots
 *poetry.lock
 *wandb
+*src/__pycache__
+*src/neural_ar/__pycache__
+*src/data/__pycache__
+*outputs
+*save
