@@ -1,10 +1,9 @@
-#USERPATH: "/Users/gian"
-PROJECTPATH: "/Users/gian/ml-gle"
-RAW_DATAPATH: "/Users/gian/ml-gle/data/melt/raw"
-READY_DATAPATH: "/Users/gian/ml-gle/data/melt/ready"
-SAVEPATH: "/Users/gian/ml-gle/save/melt"
-DEVICE: "cpu"
-
+paths:
+  PROJECTPATH: "/Users/gian/ml-gle"
+  DATAPATH: "/Users/gian/ml-gle/data/melt/"
+  SAVEPATH: "/Users/gian/ml-gle/save/melt"
+  DEVICE: "cpu"
+  WB_TRACK: True
 
 
 
