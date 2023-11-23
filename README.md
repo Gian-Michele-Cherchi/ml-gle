@@ -1,4 +1,4 @@
-## ML-GLE: an ML-enhanced Generalized Langevin Equation framework for Transient Anomalous Diffusion in Polymer Dynamics (NeurIPS ML for Physical Sciences Workshop 2023)
+ML-enhanced Generalized Langevin Equation framework for Transient Anomalous Diffusion in Polymer Dynamics (NeurIPS ML for Physical Sciences Workshop 2023)
 
 
 This project contains the source code needed to reproduce the results shown in the workshop paper submitted at the ML for Physical Sciences Workshop at the NeurIPS conference 2023 ([ML4PS workshop link](https://ml4physicalsciences.github.io/2023/)). 
