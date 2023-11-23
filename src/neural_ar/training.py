@@ -91,19 +91,21 @@ def run_model(model,
         if save:   
             if not epoch % CHECKPT_FREQ: 
                 
-                filename = "checkpt_epoch_.pth"
+                filename = "checkpt_epoch_"+str(epoch)+".pth"
                 #makedirs(exp_folder)
                 torch.save(model.state_dict(), os.path.join(exp_folder, filename))
             if res[1] < best_loss and res[1] >= res[0]:
                 best_loss = res[1]
-                filename = "checkpt_best_epoch"+str(epoch)+"_.pth"
+                best_epoch = epoch
+                filename = "checkpt_best_.pth"
                 torch.save(model.state_dict(), os.path.join(exp_folder, filename))
                 
             ####################################################################################   
     metrics = pd.DataFrame({'Train': train_loss,
                             'Val': val_loss, 
                             'Train std': std_train_loss,
-                            "Val std": std_val_loss
+                            "Val std": std_val_loss,
+                            "Best Epoch": best_epoch,
                                     })
     
     if save:

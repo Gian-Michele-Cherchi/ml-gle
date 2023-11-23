@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 from neural_ar.model import *
 from utils import *
 from data.dataset import *
-from neural_ar.training import *
+from neural_ar import *
 from torch.utils.data import DataLoader
 import wandb
 import hydra 

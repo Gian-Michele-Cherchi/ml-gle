@@ -9,7 +9,6 @@ def EulerIntegrator(
                 NGENSTEP: int,
                 device: str, 
                 IN_CHANNELS: int=1,
-                sampling: str=None,  
                 **kwargs
                 ):
     std = kwargs["std"]
@@ -31,31 +30,11 @@ def EulerIntegrator(
             mu_gen[:,t,:] = torch.bmm(rot_mean_t[:,None,...], rot_matrix.transpose(1,2))
             sigma_gen[:,t,0,:] = sigma_t
             
-            
-            if sampling == "metropolis":
-                #cond_mean = torch.bmm(rot_mean_t[:,None,...], rot_matrix.transpose(1,2))
-                #x_start = gen_data[:,t+ INPUT_SEQ-1,0]  + norms*cond_mean
-                flag = False
-                while flag == False:
-                    #average velocity sampling conditioned on historic trajectory, in the rotated ref. frame 
-                    rot_trial_sample = MultivariateNormal(rot_mean_t, sigma_t).sample().to(device)
-                    trial_sample = torch.bmm(rot_trial_sample[:,None,...], rot_matrix.transpose(1,2))
-                    x_proposal = gen_data[:,t+ INPUT_SEQ-1,0]  + norms*trial_sample[:,0,:]  # integrated position
-                    alpha = torch.exp(-(1/2)*(x_proposal**2))
-                    u = torch.rand([NPOL,3]).to(device)
-                    if (torch.sum(u <= alpha,dim=1) >= 2*torch.ones(NPOL,dtype=int,device=device)).sum() == 2*NPOL :
-                         #print(alpha.mean(), alpha.std())
-                         gen_data[:,INPUT_SEQ +t,1]  = trial_sample[:,0,:] #sampled velocity
-                         gen_data[:,INPUT_SEQ +t,0]  = gen_data[:,t+ INPUT_SEQ-1,0]  + norms*trial_sample[:,0,:]  # integrated position
-                         flag = True
-                       
-            else:
-                #average velocity sampling conditioned on historic trajectory, in the rotated ref. frame 
-                rot_trial_sample = MultivariateNormal(rot_mean_t, sigma_t).sample().to(device)
-                trial_sample = torch.bmm(rot_trial_sample[:,None,...], rot_matrix.transpose(1,2))
-                gen_data[:,INPUT_SEQ +t,1]  = trial_sample[:,0,:] #sampled velocity
-                gen_data[:,INPUT_SEQ +t,0]  = gen_data[:,t+ INPUT_SEQ-1,0]  + norms*trial_sample[:,0,:]  # integrated position
+            #average velocity sampling conditioned on historic trajectory, in the rotated ref. frame 
+            rot_trial_sample = MultivariateNormal(rot_mean_t, sigma_t).sample().to(device)
+            trial_sample = torch.bmm(rot_trial_sample[:,None,...], rot_matrix.transpose(1,2))
+            gen_data[:,INPUT_SEQ +t,1]  = trial_sample[:,0,:] #sampled velocity
+            gen_data[:,INPUT_SEQ +t,0]  = gen_data[:,t+ INPUT_SEQ-1,0]  + norms*trial_sample[:,0,:]  # integrated position
                 
-
     return gen_data, mu_gen, sigma_gen
     
