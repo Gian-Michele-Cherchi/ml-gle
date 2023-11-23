@@ -46,6 +46,19 @@ The training dataset is available at at https://huggingface.co/datasets/gian-mic
 
 ## Train the NAR model for modes non-Markovian dynamics
 
+Modes training with the NAR model can be done by running the following:
+
+```
+python src/run_train.py train.mode=1
+```
+by specifying the mode number one wants to train, it is possible to override the default mode, specified in the config file in the train folder. 
+
+With Hydra, modes training can be done with a single command line: 
+```
+python src/run_train.py --multirun train=train_conf train.mode=1,2,3,...
+```
+This launches jobs which are run sequentially, but multiprocessing can be exploited with joblib lanucher [JobLib Launcher](https://hydra.cc/docs/plugins/joblib_launcher/), decreasing sensibly the training computational cost. 
+
 ## Generate effective polymer dynamics with the GLE
 
 
