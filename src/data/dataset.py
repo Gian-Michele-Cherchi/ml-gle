@@ -9,8 +9,10 @@ def subtraj_mode_dataset(
                     split: list,
                     nmode:int,
                     norm: bool=True, 
-                    device: str="cpu"
-                    ):
+                    device: str="cpu", 
+                    test: bool=False
+                    ) -> list:
+    
     ex_flag = os.path.isfile(filepath)
     assert nmode>= 0, ValueError("mode index cannot be negative!")
     if ex_flag:
@@ -33,13 +35,15 @@ def subtraj_mode_dataset(
         input_val = data_pos[:,1:][:, n_train:n_val]
         target_train = data_vel[:,:n_train]
         target_val = data_vel[:,n_train:n_val]
-        #input_test = data_pos[:,1:][:,n_val:]
-        #target_test = data_vel[:,n_val:]
+        input_test = data_pos[:,1:][:,n_val:]
+        target_test = data_vel[:,n_val:]
         df = {"norms": norms, 
             "input_train": input_train, 
             "input_val": input_val, 
             "target_train":target_train, 
             "target_val": target_val,
+            "input_test": input_test,
+            "target_test": target_test
                 }
         torch.save(df, filepath)
         del data 
@@ -52,19 +56,27 @@ def subtraj_mode_dataset(
         
     data_train = torch.cat([input_train[:,:n_input], target_train[:,n_input:n_input+1]], dim=1).squeeze(2)
     data_val = torch.cat([input_val[:,:n_input], target_val[:,n_input:n_input+1]], dim=1).squeeze(2)
-    #data_test = torch.cat([input_test[:,:n_input], target_test[:,n_input:n_input+1]], dim=1).squeeze(2)
+    if test:
+        data_test = torch.cat([input_test[:,:n_input], target_test[:,n_input:n_input+1]], dim=1).squeeze(2)
+        
     for t in range(1,input_train.size(1)-n_input-1):
         tmp = torch.cat([input_train[:,t:t+n_input], target_train[:,t+n_input:t+n_input+1]], dim=1).squeeze(2)
         data_train = torch.cat([data_train, tmp], dim=0)
     for t in range(1,input_val.size(1)-n_input-1):
         tmp = torch.cat([input_val[:,t:t+n_input], target_val[:,t+n_input:t+n_input+1]], dim=1).squeeze(2)
         data_val = torch.cat([data_val, tmp], dim=0)
-    #for t in range(1,input_test.size(1)-n_input-1):
-    #    tmp = torch.cat([input_test[:,t:t+n_input], target_test[:,t+n_input:t+n_input+1]], dim=1).squeeze(2)
-    #    data_test = torch.cat([data_test, tmp], dim=0)
+        
+    if test:
+        for t in range(1,input_test.size(1)-n_input-1):
+            tmp = torch.cat([input_test[:,t:t+n_input], target_test[:,t+n_input:t+n_input+1]], dim=1).squeeze(2)
+            data_test = torch.cat([data_test, tmp], dim=0)
+            return data_train, data_val, data_test, norms
+        
+    else:
+        return data_train, data_val, norms
+        
     #data_train = data_train[torch.randperm(data_train.size(0))]
     #data_val = data_val[torch.randperm(data_val.size(0))]
-    return data_train, data_val, norms
-        
+   
 
                 
