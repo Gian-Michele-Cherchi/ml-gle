@@ -46,31 +46,6 @@ def get_device(tensor):
 
 
 
-
-def rouse_matrix3D(n_at, n_red):
-
-    return np.array([np.array([np.cos(((p*np.pi)/(n_at))*(n + 0.5))*np.eye(3) 
-                for p in range(n_red)]).reshape(3*n_red,3).T 
-                for n in range(n_at)]).reshape(3*n_at,3*n_red)
-
-def rouse_matrix1D(n_at, n_red):
-
-    return np.array([np.array([np.cos(((p*np.pi)/(n_at))*(n + 0.5))*np.eye(1) 
-                for p in range(n_red)]).reshape(n_red,1).T 
-                for n in range(n_at)]).reshape(n_at,n_red)
-
-
-
-
-def sample_standard_gaussian(mu, sigma):
-    device = get_device(mu)
-    d = torch.distributions.normal.Normal(
-        torch.Tensor([0.0]).to(device), torch.Tensor([1.0]).to(device)
-    )
-    r = d.sample(mu.size()).squeeze(-1)
-    return r * sigma.float() + mu.float()
-
-
 def activation_func(activation):
     return  nn.ModuleDict([
         ['tanh', nn.Tanh()],
@@ -80,9 +55,6 @@ def activation_func(activation):
         ['none', nn.Identity()],
         ['sigmoid', nn.Sigmoid()]
     ])[activation]
-
-
-
 
 
 def histogram(data, bins, density=True):
@@ -100,6 +72,37 @@ def histogram(data, bins, density=True):
     else:
         hist = count 
     return x,hist, norm
+
+
+def msd_bf(x, tau):
+    diff2 = (x[:,:x.shape[1]-tau] - x[:,tau:])**2
+    return diff2.mean(dim=1).mean()
+
+#ACF FFT Algorithmv. Cost O(nlog(n))
+def autocorrFFT(x):
+  N=x.size(1)
+  batchsize = x.size(0)
+  F = torch.fft.fft(x, n=2*N)
+  PSD = F*F.conj()
+  res = torch.fft.ifft(PSD)
+  res= (res[:,:N]).real  
+  n=N*torch.ones(N)-torch.arange(0,N)
+  return res/n.unsqueeze(0).expand(batchsize,-1).to(x)
+
+ # MSD FFT Algorithm
+def msd_fft(r):
+  N=r.size(1)
+  D=torch.square(r).to(r) 
+  #torch.cuda.empty_cache()
+  D=torch.cat([D, torch.zeros(D.size(0),1).to(r)], dim=1)
+  S2=autocorrFFT(r)
+  Q=2*D.sum(dim=1)
+  S1=torch.zeros(r.size(0),N).to(r)
+  for m in range(N):
+      Q=Q-D[:,m-1]-D[:,N-m]
+      S1[:,m]=Q/(N-m)
+  return S1-2*S2
+
     
 def getcorr(data, norm=True):
     nsamples = data.size(0)
@@ -117,35 +120,7 @@ def getcorr(data, norm=True):
     return corr, tau
 
 
-def weight_kld(alpha, k, peak_position, epochs):
-    steps = np.arange(0,peak_position,1)
-    kld_weight = 1/(1 + np.exp(-alpha*(steps-k))) - 1/(1+np.exp(alpha*k))
-    for _ in range(epochs//k -2):
-        kld_weight = np.concatenate((kld_weight,kld_weight), axis=0)
-    return kld_weight
 
 
-def marginal_prob_std(time, sigma):
-    """
-    Compute the mean and standard deviation of the conditional distribution p(x(t)|x(0))
-
-    Args:
-        t : transformation time 
-        sigma: sigma SDE parameter
-    """
-    t = time.clone().detach().to(time)
-    return torch.sqrt((sigma**(2 * t) - 1.) / 2. / np.log(sigma)) 
-
-
-def diffusion_coeff(time, sigma):
-    """Compuation of the SDE diffusion coefficient 
-
-    Args:
-        t: A vector of time steps 
-        sigma: The sigma SDE parameter
-    Returns:
-        The vector of diffusion coefficients.
-    """
-    return (sigma*time.clone().detach()).to(time)
 
 
