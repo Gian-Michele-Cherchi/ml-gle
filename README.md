@@ -2,10 +2,8 @@
 
 This project contains the source code needed to reproduce the results shown in the workshop paper submitted at the ML for Physical Sciences Workshop at the NeurIPS conference 2023 ([ML4PS workshop link](https://ml4physicalsciences.github.io/2023/)). 
 
-
-https://github.com/Gian-Michele-Cherchi/ml-gle/assets/43932730/891a4a6c-4adb-4166-9ee4-b234274d3b25
-
-
+                                                 
+<video width="210" height="100" src="https://github.com/Gian-Michele-Cherchi/ml-gle/assets/43932730/891a4a6c-4adb-4166-9ee4-b234274d3b25"></video>
 
 
 The ML-GLE framework is able to emulate and extrapolate the long-term effective dynamics of slow diffusive polymers inside a polymer melt medium. It reproduces all the relevant statistical features and further enhances the Generalized Langevin Equation solution pertaining to transient anomlaous diffusion, allowing for simulating several orders of magnitute over the training dataset trajectory length, discovering therefore the diffusive properties, without performing a full-size simulation. 
