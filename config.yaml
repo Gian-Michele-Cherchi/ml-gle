@@ -3,7 +3,7 @@ paths:
   DATAPATH: "/Users/gian/ml-gle/data/melt/"
   SAVEPATH: "/Users/gian/ml-gle/save/melt"
   DEVICE: "cpu"
-  WB_TRACK: True
+  
 
 
 
