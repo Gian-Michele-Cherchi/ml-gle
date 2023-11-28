@@ -78,6 +78,7 @@ def train_app(cfg: DictConfig) -> None:
 
     print("[Mode={:d} NAR Training, input length "+str(n_input)+" steps]\n" .format(mode))
     # Dynamical Score Model 
+    torch.manual_seed(seed)
     model = dynamical_model(
                     input_length=n_input, 
                     in_channels=1, 
