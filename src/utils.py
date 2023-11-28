@@ -119,7 +119,10 @@ def getcorr(data, norm=True):
             corr[t] = diff_tau.contiguous().view(-1).mean()
     return corr, tau
 
-
+# autocorrelation confidence intervalas following Malard & Roy (1998)
+def acf_se(acf_k,l):
+    se = (1 + 2*(acf_k.mean(dim=0)**2)[:-1].sum(dim=0))/l
+    return torch.sqrt(se).cpu().item()
 
 
 
