@@ -1,3 +1,5 @@
 nsamples: 300
 ngen: '1e5'
 k: 12
+acf: True
+gle: False
