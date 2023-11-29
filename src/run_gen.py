@@ -54,8 +54,8 @@ def eval_app(cfg: DictConfig) -> None:
     per_train =  cfg.train["per_train"]
     per_val = cfg.train["per_val"]
     temp = cfg.train["temp"]
-    seed = cfg.train["seed"]
-    checkpt = cfg.train["checkpt_epoch"]
+    #seed = cfg.train["seed"]
+    #checkpt = cfg.train["checkpt_epoch"]
     z_dim = cfg.train["z_dim"]
     nsamples = cfg.eval["nsamples"]
     ngen = int(float(cfg.eval["ngen"]))
