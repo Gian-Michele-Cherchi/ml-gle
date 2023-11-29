@@ -13,10 +13,8 @@ import re
 with open("config.yaml") as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
-PROJECTNAME = config["PROJECTNAME"]
-USERPATH = config["USERPATH"]
-SYSTEM = config["SYSTEM"]
-FULLPATH  = os.path.join(USERPATH, PROJECTNAME)
+PROJECTPATH = config["paths"]["PROJECTPATH"]
+FULLPATH  = PROJECTPATH
 SUBMODULE = os.path.join(FULLPATH, "ia")
 SAVEPATH = os.path.join(FULLPATH, "save")
 sys.path.append(SUBMODULE)

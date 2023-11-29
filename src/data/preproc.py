@@ -12,15 +12,13 @@ import tqdm
 with open("config.yaml") as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 
-PROJECTNAME = config["PROJECTNAME"]
-USERPATH = config["USERPATH"]
-SYSTEM = config["SYSTEM"]
-FULLPATH  = os.path.join(USERPATH, PROJECTNAME)
+PROJECTPATH = config["paths"]["PROJECTPATH"]
+FULLPATH  = PROJECTPATH
 SUBMODULE = os.path.join(FULLPATH, "ia")
 sys.path.append(SUBMODULE)
 logging.basicConfig(level=logging.INFO)
 
-###################################
+##################################
 def xarray2torch(sourcepath: str, 
                  destpath: str,
                  device: str="cuda",

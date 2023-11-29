@@ -3,13 +3,6 @@ import os
 import yaml
 import torch 
 import logging
-with open("config.yaml") as f:
-    config = yaml.load(f, Loader=yaml.FullLoader)
-    
-PROJECTPATH = config["paths"]["PROJECTPATH"]
-DATAPATH = config["paths"]["DATAPATH"]
-SAVEPATH = config["paths"]["SAVEPATH"]
-DEVICE = config["paths"]["DEVICE"]
 logging.basicConfig(level=logging.INFO)
 from neural_ar.model import *
 from utils import *
@@ -20,10 +13,17 @@ import wandb
 import hydra 
 from omegaconf import DictConfig, OmegaConf
 
+with open("config.yaml") as f:
+    config = yaml.load(f, Loader=yaml.FullLoader) 
+PROJECTPATH = config["paths"]["PROJECTPATH"]
+DATAPATH = config["paths"]["DATAPATH"]
+SAVEPATH = config["paths"]["SAVEPATH"]
+DEVICE = config["paths"]["DEVICE"]
+
+
 @hydra.main(version_base=None, config_path="config", config_name="config")
 def eval_app(cfg: DictConfig) -> None:
     #print(OmegaConf.to_yaml(cfg))
-    
     wandb.init(
         project="ml-gle",
         config={
@@ -47,6 +47,7 @@ def eval_app(cfg: DictConfig) -> None:
         "k": cfg.eval["k"]
         }
     )
+    
     lr =  float(cfg.train["lr"])
     n_input = cfg.train["n_input"]
     temp = cfg.train["temp"]
@@ -71,12 +72,14 @@ def eval_app(cfg: DictConfig) -> None:
                         ).to(DEVICE)
 
     modes_traj = torch.Tensor(nsamples, ngen, k, 3).to(DEVICE)
-    mode_corr = []
     genmode_corr = []
+    
     for nmode in range(1,k):
+        
         savepath = os.path.join(SAVEPATH, "T"+str(temp)+"/mode"+str(nmode)+"_"+str(n_input)+"steps")
         gen_path = os.path.join(savepath, "gen")
         makedirs(gen_path)
+        
         try:
             losspath = os.path.join(savepath, "metrics.csv")
         except OSError as e:
@@ -92,6 +95,7 @@ def eval_app(cfg: DictConfig) -> None:
         try: 
             # If file exists, load in memory instead of generating 
             modes_traj[:, :, nmode] = torch.load(mode_filepath, map_location=DEVICE)[:,:ngen,0]
+        # Generate mode dynamics 
         except OSError as e:
             print("[File not Found. Starting Mode "+str(nmode)+" Autoregressive Generation with model at epoch "+str(best_epoch)+"]\n")
             sourcepath = os.path.join(DATAPATH, "ready/modesdata_T"+str(temp)+"_.pt")
@@ -126,7 +130,6 @@ def eval_app(cfg: DictConfig) -> None:
                 )
             modes_traj[:,:,nmode] = mode_traj[0]
             if flag_acf:
-               #mode_corr.append(autocorrFFT(dataset_pos[:,:n_input ].swapaxes(1,2).contiguous().view(dataset.size(0)*3,-1)).mean(dim=0)/dataset_pos[:,:n_input].var())
                #genmode_corr.append(autocorrFFT(gen_data[:,:,0].swapaxes(1,2).contiguous().view(3*gen_data.size(0),-1)).mean(dim=0)/gen_data[:,:,0].var())
                pass
                
