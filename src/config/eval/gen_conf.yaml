@@ -1,5 +1,5 @@
-nsamples: 300
+nsamples: 100
 ngen: '1e3'
 k: 12
 acf: True
-gle: False
+gle: True
