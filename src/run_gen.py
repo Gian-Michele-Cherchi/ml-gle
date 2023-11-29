@@ -64,6 +64,7 @@ def eval_app(cfg: DictConfig) -> None:
     flag_gle = cfg.eval["gle"]
     n_train = int(per_train*10000)
     # NAR model 
+    eval_metrics = {}
     model = dynamical_model(
                         input_length=n_input, 
                         in_channels=1, 
@@ -71,13 +72,13 @@ def eval_app(cfg: DictConfig) -> None:
                         pred_var_dims=3,
                         ).to(DEVICE)
 
-    modes_traj = torch.Tensor(nsamples, ngen+n_input, k, 3).to(DEVICE)
+    modes_traj = torch.Tensor(nsamples, ngen+n_input, k+1, 3).to(DEVICE)
     gen_nacfs = {}
     sourcepath = os.path.join(DATAPATH, "ready/modesdata_T"+str(temp)+"_.pt")
     test_data = torch.load(sourcepath, map_location=DEVICE).swapaxes(0,1)
     norms = [torch.sqrt((test_data[:,:n_train]**2).mean(dim=(0,1,3))),torch.sqrt((test_data[:,:n_train].diff(dim=1)**2).mean(dim=(0,1,3)))]
     
-    for nmode in range(1,k):
+    for nmode in range(1,k+1):
         
         savepath = os.path.join(SAVEPATH, "T"+str(temp)+"/mode"+str(nmode)+"_"+str(n_input)+"steps")
         gen_path = os.path.join(savepath, "gen")
@@ -98,20 +99,10 @@ def eval_app(cfg: DictConfig) -> None:
         mode_filepath = os.path.join(gen_path, "gen_mode_epoch"+str(best_epoch)+"_.pt")
         try: 
             # If file exists, load in memory instead of generating 
-            modes_traj[:, :, nmode] = torch.load(mode_filepath, map_location=DEVICE)[:,:ngen,0]
+            modes_traj[:, :, nmode] = torch.load(mode_filepath, map_location=DEVICE)[:,:,0]
         # Generate mode dynamics 
         except OSError as e:
             print("[File not Found. Starting Mode "+str(nmode)+" Autoregressive Generation with model at epoch "+str(best_epoch)+"]\n")
-            #test_data, norms = subtraj_mode_dataset(
-            #                                    sourcepath=sourcepath,
-            #                                    filepath=filepath,
-            #                                    n_input=n_input,
-            #                                    split=[per_train, per_train + per_val*per_train], 
-            #                                    nmode=nmode, 
-            #                                    norm=True,
-            #                                    device=DEVICE,
-            #                                    test=True
-            #                                    )
             
             # Load model weights 
             checkpt_file = "checkpt_epoch_"+str(best_epoch)+".pth"
@@ -137,27 +128,28 @@ def eval_app(cfg: DictConfig) -> None:
                 tmp["nacfs"] = acf.mean(dim=0)
                 tmp["SE"] = torch.tensor(list(map(lambda i: acf_se(acf[:,:i],acf.size(1)), range(1,acf.size(1)))))
                 gen_nacfs["mode"+str(nmode)] = tmp   
-                torch.save(os.path.join(gen_path, "gen_mode_nacfs_T"+str(temp)+"_ngen"+str(ngen)+"_.pt"))
+                torch.save(tmp, os.path.join(gen_path, "gen_mode_nacfs_T"+str(temp)+"_ngen"+str(ngen)+"_.pt"))
                 
             torch.save(mode_traj,mode_filepath)
             torch.save({"mu": mu_traj, "sigma": sigma_traj}, os.path.join(gen_path, "gen_params_mode"+str(nmode)+"_epoch"+str(best_epoch)+"_.pt"))
             
-            eval_metrics = {"mode": nmode,
-                            "Best Epoch": best_epoch,
-                            "params": params,
-                            }
-            wandb.log(eval_metrics)
-            pd.save_csv(os.path.join(gen_path,"eval_metrics.csv"))
-    if flag_gle: 
+            eval_metrics["mode"+str(nmode)] = best_epoch
+            wandb.log({"Best Epoch": best_epoch})
+            com_path = os.path.join(SAVEPATH, "T"+str(temp)+"/com_gle_"+str(k)+"modes_"+str(n_input)+"steps")
+            makedirs(com_path)
+            pd.DataFrame(eval_metrics, index=[0]).to_csv(os.path.join(com_path,"eval_metrics.csv"))
+    if flag_gle:
         # Fit GLE model on short trajectories 
         gle_model = TransientGLE()
-        gle_model.fit()
+        gle_model.fit(test_data[:,:n_train, :k+1], n_max=n_input)
         params = gle_model.get_params()
-        
+        wandb.log({"alpha": torch.sqrt(params)[0][0].item(), "beta": torch.sqrt(params)[0][1].item()})
         # Center of Mass dyamics with Transient GLE solution and generated modes 
-        modes_traj[:,:,0] = gle_model(modes_traj)
-    
-        
+        modes_traj[:,:,0] = gle_model.forward(modes_traj)
+        com_path = os.path.join(SAVEPATH, "T"+str(temp)+"/com_gle_"+str(k)+"modes_"+str(n_input)+"steps")
+        makedirs(com_path)
+        torch.save(modes_traj[:,:,0], os.path.join(com_path,"gen_com_.pt"))
+         
        
 if __name__ == "__main__":
     eval_app()
