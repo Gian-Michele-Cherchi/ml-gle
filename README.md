@@ -28,11 +28,10 @@ poetry shell
 ## Environment Variables
 
 Change the following fields in the ```config.yaml``` project configuration file:
-- ```USERPATH```: path to the user folder
 - ```PROJECTPATH```: path to the project folder
-- ```RAW_DATAPATH```: path to the MD simulation trajectories in LAMMPS format
-- ```READY_DATAPATH```: path to the ready training data in ```.pt``` format
+- ```DATAPATH```: path to the MD simulation trajectories in LAMMPS format
 - ```SAVEPATH```: path to save the model checkpoints
+-  ```DEVICE```: device for training and generation
 
 ## Train the NAR model for modes non-Markovian dynamics
 
@@ -47,11 +46,21 @@ by specifying the mode number one wants to train, it is possible to override the
 
 With Hydra, modes training can be done with a single command line: 
 ```
-python src/run_train.py --multirun train=train_conf train.mode=1,2,3,...
+python src/run_train.py --multirun train=train_conf train.mode=1,2,3
 ```
 This launches jobs which are run sequentially, but CPU multiprocessing could be exploited with joblib lanucher [JobLib Launcher](https://hydra.cc/docs/plugins/joblib_launcher/), although further tests implementing this option were not performed. 
 
 ## Generate effective polymer dynamics with the GLE
+Autoregressive Generation with the NAR model can be done with the following command, by specifying the number of modes, provided they are all properly trained and checkpoints saved: 
+```
+python src/run_gen.py  eval=gen_conf eval.nmodes=12
+```
+In addition, if one wishes to also fit the Transient GLE equation and generate the Center of Mass dynamics, one can pass the following argument: 
+```
+python src/run_gen.py  eval=gen_conf eval.nmodes=12 eval.gle=True
+```
+Autocorrelations are computed on the fly by default for each generated mode. 
+In order to compute the MD simulated baselines for test and comparison (Autocorrelation functions and the Mean Square Displacements), see the [NACFs](src/nacfs_.py) and [MSDs](src/msd_.py) scripts.
 
 ## Polymer Melt Dataset
 The training data comes from a coarse-grained (CG) polymer melt simulation of a Polybutadyene Rubber simulated from 300K to 400K with 100 chains made of 100 monomers each. The simulations were made with LAMMPS using a classic Verlet Algorithm implementing a dissipative particle dynamics (DPD) for CG monomers with a timestep of $\\delta t = 50 fs$. We refer to the paper [Consistent and Transferable Force Fields for Statistical Copolymer Systems at the Mesoscale](https://pubs.acs.org/doi/10.1021/acs.jctc.2c00945) for more detailed information on the simulation and CG methods. 
@@ -60,10 +69,10 @@ The simulated trajectories are downsampled on-the-fly with a coarse-grained time
 
 With the ML-GLE, only a small fraction of the simulation time is needed to extrapolate the effective single polymer dynamics and discover the diffusion coefficient. 
 
-### Pre-processing: RAW -> READY
-Under the directory [src/data](src/data), the ```preproc.py``` script can be used to convert the LAMMPS dump.nc containing the polymer trajectories file in pytorch format ```.pt``` and obtain the normal modes trajectories as well in a separate ```.pt``` file, which will be used for training. 
-### Post-processing
-
+### Pre-processing: LAMMPS -> TORCH TENSOR
+Under the directory [data](src/data), the ```preproc.py``` script can be used to convert the LAMMPS dump.nc containing the polymer trajectories file in pytorch format ```.pt``` and obtain the normal modes trajectories as well in a separate ```.pt``` file, which can subsequently be used for training. 
+### Post-processing: Configuration Reconstruction (.xyz format)
+The ```postproc.py``` script, under the same directory, can instead be used to recontruct the polymer configuration in real space starting from the generated modes. The file is saved in ```.pt``` format and also ```.xyz``` format, for visualization. 
 
 
 
