@@ -27,10 +27,10 @@ def subtraj_mode_dataset(
     else:   
         data = torch.load(sourcepath, map_location=device)
         data = data.swapaxes(0,1)[:,4000:14000,:,:]
+        nframes = data.size(1)
+        n_train = int(split[0]*nframes)
+        n_val = int(split[1]*nframes)
         norms = [torch.sqrt((data[:,:n_train]**2).mean(dim=(0,1,3))),torch.sqrt((data[:,:n_train].diff(dim=1)**2).mean(dim=(0,1,3)))]
-        nsamples = data.size(1)
-        n_train = int(split[0]*nsamples)
-        n_val = int(split[1]*nsamples)
         data_pos = data[:,:,nmode:nmode+1,:] #original dataset 
         data_vel = data.diff(dim=1)[:,:,nmode:nmode+1,:] #first d
         input_train = data_pos[:,1:][:,:n_train]
