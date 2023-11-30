@@ -59,7 +59,7 @@ def eval_app(cfg: DictConfig) -> None:
     z_dim = cfg.train["z_dim"]
     nsamples = cfg.eval["nsamples"]
     ngen = int(float(cfg.eval["ngen"]))
-    k = cfg.eval["k"]
+    k = cfg.eval["nmodes"]
     flag_acf = cfg.eval["acf"]
     flag_gle = cfg.eval["gle"]
     n_train = int(per_train*10000)
