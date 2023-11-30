@@ -10,7 +10,6 @@ PROJECTPATH = config["paths"]["PROJECTPATH"]
 DATAPATH = config["paths"]["DATAPATH"]
 SAVEPATH = config["paths"]["SAVEPATH"]
 DEVICE = config["paths"]["DEVICE"]
-WB_TRACK = config["paths"]["WB_TRACK"]
 logging.basicConfig(level=logging.INFO)
 from neural_ar.model import *
 from utils import *
@@ -24,27 +23,27 @@ from omegaconf import DictConfig, OmegaConf
 @hydra.main(version_base=None, config_path="config", config_name="config")
 def train_app(cfg: DictConfig) -> None:
     #print(OmegaConf.to_yaml(cfg))
-    if WB_TRACK:
-        wandb.init(
-            project="ml-gle",
-            config={
-            "lr": float(cfg.train["lr"]),
-            "architecture": cfg.train["architecture"],
-            "dataset": cfg.train["dataset"],
-            "n_input": cfg.train["n_input"],
-            "epochs": cfg.train["epochs"],
-            "per_train": cfg.train["per_train"],
-            "per_val": cfg.train["per_val"],
-            "temp": cfg.train["temp"], 
-            "mode": cfg.train["mode"],
-            "z_dim": cfg.train["z_dim"], 
-            "train_batch": cfg.train["train_batch"],
-            "val_batch": cfg.train["val_batch"],
-            "activation": cfg.train["activation"],
-            "seed": cfg.train["seed"],
-            "save": cfg.train["save"],
-            }
-        )
+    
+    wandb.init(
+        project="ml-gle",
+        config={
+        "lr": float(cfg.train["lr"]),
+        "architecture": cfg.train["architecture"],
+        "dataset": cfg.train["dataset"],
+        "n_input": cfg.train["n_input"],
+        "epochs": cfg.train["epochs"],
+        "per_train": cfg.train["per_train"],
+        "per_val": cfg.train["per_val"],
+        "temp": cfg.train["temp"], 
+        "mode": cfg.train["mode"],
+        "z_dim": cfg.train["z_dim"], 
+        "train_batch": cfg.train["train_batch"],
+        "val_batch": cfg.train["val_batch"],
+        "activation": cfg.train["activation"],
+        "seed": cfg.train["seed"],
+        "save": cfg.train["save"],
+        }
+    )
     lr =  float(cfg.train["lr"])
     n_input = cfg.train["n_input"]
     temp = cfg.train["temp"]
